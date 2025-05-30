@@ -80,6 +80,7 @@ class CalculationResult(models.Model):
         return f"Расчет для {self.user.username}"
 
 
+
 class FavoriteFood(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Пользователь")
     food = models.ForeignKey(FoodRecommendation, on_delete=models.CASCADE, verbose_name="Блюдо")
@@ -88,7 +89,7 @@ class FavoriteFood(models.Model):
     class Meta:
         verbose_name = "Избранное блюдо"
         verbose_name_plural = "Избранные блюда"
-        unique_together = ('user', 'food')  # один пользователь не может добавить одно блюдо дважды
+        unique_together = ('user', 'food')
 
     def __str__(self):
         return f"{self.user.username} - {self.food.name}"
