@@ -9,7 +9,6 @@ class FavoriteFoodInline(admin.TabularInline):
     extra = 1
     readonly_fields = ('added_at',)
     can_delete = True
-    show_change_link = True
 
 
 @admin.register(Goal)
@@ -37,13 +36,10 @@ class UserProfileAdmin(admin.ModelAdmin):
 
 @admin.register(FoodRecommendation)
 class FoodRecommendationAdmin(admin.ModelAdmin):
-    list_display = ('name', 'goal', 'has_image', 'created_at')
+    list_display = ('name', 'goal', 'has_image')
     list_filter = ('goal',)
     search_fields = ('name',)
     list_display_links = ('name',)
-    date_hierarchy = 'id'
-    filter_horizontal = []
-    readonly_fields = ('created_at',)
     fieldsets = (
         ("Основная информация", {
             'fields': ('name', 'description', 'goal')
@@ -59,10 +55,6 @@ class FoodRecommendationAdmin(admin.ModelAdmin):
     def has_image(self, obj):
         return bool(obj.image)
 
-    @admin.display(description='Дата создания')
-    def created_at(self, obj):
-        return obj.created_at.strftime("%Y-%m-%d %H:%M")
-
 
 @admin.register(Exercise)
 class ExerciseAdmin(admin.ModelAdmin):
@@ -70,7 +62,6 @@ class ExerciseAdmin(admin.ModelAdmin):
     list_filter = ('goal',)
     search_fields = ('name',)
     list_display_links = ('name',)
-    date_hierarchy = 'id'
     verbose_name = "Упражнение"
     verbose_name_plural = "Упражнения"
 
@@ -94,11 +85,11 @@ class CalculationResultAdmin(admin.ModelAdmin):
 
 @admin.register(FavoriteFood)
 class FavoriteFoodAdmin(admin.ModelAdmin):
-    list_display = ('user', 'food', 'added_at')
-    list_filter = ('user',)
+    list_display = ('profile', 'food', 'added_at')
+    list_filter = ('profile',)
     date_hierarchy = 'added_at'
-    raw_id_fields = ('user', 'food')
-    search_fields = ('user__username', 'food__name')
+    raw_id_fields = ('profile', 'food')
+    search_fields = ('profile__user__username', 'food__name')
     readonly_fields = ('added_at',)
     verbose_name = "Избранное блюдо"
     verbose_name_plural = "Избранные блюда"

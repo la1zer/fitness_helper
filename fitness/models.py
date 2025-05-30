@@ -5,6 +5,17 @@ from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
 
 
+class Goal(models.Model):
+    name = models.CharField("Цель", max_length=50)
+
+    class Meta:
+        verbose_name = "Цель"
+        verbose_name_plural = "Цели"
+
+    def __str__(self):
+        return self.name
+
+
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     weight = models.FloatField("Вес (кг)", default=70)
@@ -20,17 +31,6 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.weight} кг"
-
-
-class Goal(models.Model):
-    name = models.CharField("Цель", max_length=50)
-
-    class Meta:
-        verbose_name = "Цель"
-        verbose_name_plural = "Цели"
-
-    def __str__(self):
-        return self.name
 
 
 class FoodRecommendation(models.Model):
@@ -80,16 +80,13 @@ class CalculationResult(models.Model):
         return f"Расчет для {self.user.username}"
 
 
-
 class FavoriteFood(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Пользователь")
-    food = models.ForeignKey(FoodRecommendation, on_delete=models.CASCADE, verbose_name="Блюдо")
-    added_at = models.DateTimeField("Дата добавления", auto_now_add=True)
+    profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    food = models.ForeignKey(FoodRecommendation, on_delete=models.CASCADE)
+    added_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        verbose_name = "Избранное блюдо"
-        verbose_name_plural = "Избранные блюда"
-        unique_together = ('user', 'food')
+        unique_together = ('profile', 'food')
 
     def __str__(self):
-        return f"{self.user.username} - {self.food.name}"
+        return f"{self.profile.user.username} - {self.food.name}"
